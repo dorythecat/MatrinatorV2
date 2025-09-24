@@ -4,11 +4,13 @@
 #include <iostream>
 #include <stdexcept>
 #include <type_traits>
+#include <limits>
 
 template<unsigned int Rows, unsigned int Cols, typename T>
 class Matrix {
     static_assert(Rows > 0 && Cols > 0, "Matrix dimensions must be greater than zero.");
     static_assert(std::is_arithmetic_v<T>, "Matrix type must be arithmetic.");
+    static_assert(Rows * Cols <= std::numeric_limits<unsigned int>::max(), "Matrix size exceeds maximum limit.");
 public:
     T data[Rows * Cols];
 
