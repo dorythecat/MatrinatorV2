@@ -16,9 +16,15 @@ public:
         return *this;
     }
 
-    // Element access
-    T& operator()(const unsigned int row, const unsigned int col) { return data[row * Cols + col]; }
-    const T& operator()(const unsigned int row, const unsigned int col) const { return data[row * Cols + col]; }
+    // Element access with bounds checking
+    T& operator()(const unsigned int row, const unsigned int col) {
+        if (row >= Rows || col >= Cols) throw std::out_of_range("Matrix - Index out of range");
+        return data[row * Cols + col];
+    }
+    const T& operator()(const unsigned int row, const unsigned int col) const {
+        if (row >= Rows || col >= Cols) throw std::out_of_range("Matrix - Index out of range");
+        return data[row * Cols + col];
+    }
 
     // Size information
     [[nodiscard]] static unsigned int rows() { return Rows; }
