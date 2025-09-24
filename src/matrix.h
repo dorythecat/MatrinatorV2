@@ -28,6 +28,14 @@ public:
     }
     bool operator!=(const Matrix& other) const { return !(*this == other); }
 
+    friend std::ostream& operator<<(std::ostream& os, Matrix m) {
+        for (unsigned int i = 0; i < Rows; ++i) {
+            for (unsigned int j = 0; j < Cols; ++j) {
+                os << m.data[i * Cols + j] << " ";
+            } os << "\n";
+        } return os;
+    }
+
 private:
     T data[Rows * Cols];
 };
