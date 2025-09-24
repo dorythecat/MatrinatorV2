@@ -3,7 +3,7 @@ I wanted to redo my old Matrinator project, to hopefully be more useful and vers
 
 The idea is to hhave a program that can:
 - [x] Store arbitrary size and data type matrices, efficiently and with garbage disposal.
-- [ ] Be able to get and set specific items of the matrix.
+- [x] Be able to get and set specific items of the matrix.
 - [ ] Be able to add and substract matrices.
 - [ ] Be able to multiply by scalars and other matrices.
 - [ ] Be able to take the determinant of square matrices.
