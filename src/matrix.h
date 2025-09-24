@@ -84,6 +84,17 @@ public:
         return *this;
     }
 
+    // Scalar multiplication
+    Matrix operator*(const T& scalar) const {
+        Matrix result;
+        for (unsigned int i = 0; i < Rows * Cols; i++) result.data[i] = data[i] * scalar;
+        return result;
+    }
+    Matrix& operator*=(const T& scalar) {
+        for (unsigned int i = 0; i < Rows * Cols; i++) data[i] *= scalar;
+        return *this;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (unsigned int i = 0; i < Rows; i++) {
