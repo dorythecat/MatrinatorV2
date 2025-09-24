@@ -20,16 +20,19 @@ public:
     template<typename U>
     explicit Matrix(std::function<U()> func) {
         static_assert(std::is_arithmetic_v<U>, "Function return type must be arithmetic.");
+        static_assert(std::is_convertible_v<U, T>, "Function return type must be convertible to matrix type.");
         for (size_t i = 0; i < Rows * Cols; i++) data[i] = static_cast<T>(func());
     }
     template<typename U>
     explicit Matrix(std::function<U(size_t)> func) {
         static_assert(std::is_arithmetic_v<U>, "Function return type must be arithmetic.");
+        static_assert(std::is_convertible_v<U, T>, "Function return type must be convertible to matrix type.");
         for (size_t i = 0; i < Rows * Cols; i++) data[i] = static_cast<T>(func(i));
     }
     template<typename U>
     explicit Matrix(std::function<U(size_t, size_t)> func) {
         static_assert(std::is_arithmetic_v<U>, "Function return type must be arithmetic.");
+        static_assert(std::is_convertible_v<U, T>, "Function return type must be convertible to matrix type.");
         for (size_t i = 0; i < Rows * Cols; i++) data[i] = static_cast<T>(func(i, static_cast<size_t>(i / Cols)));
     }
 
@@ -72,9 +75,10 @@ public:
     // Comparison
     template<size_t OtherRows, size_t OtherCols, typename U>
     bool operator==(const Matrix<OtherRows, OtherCols, U>& other) const {
+        static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for comparison.");
         if (Rows != OtherRows || Cols != OtherCols) return false;
         if (this == reinterpret_cast<const void*>(&other)) return true;
-        for (size_t i = 0; i < Rows * Cols; i++) if (data[i] != other.data[i]) return false;
+        for (size_t i = 0; i < Rows * Cols; i++) if (data[i] != static_cast<T>(other.data[i])) return false;
         return true;
     }
     template<size_t OtherRows, size_t OtherCols, typename U>
@@ -106,6 +110,7 @@ public:
     template<typename U>
     Matrix operator*(const U& scalar) const {
         static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic.");
+        static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         Matrix result;
         for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] * static_cast<T>(scalar);
         return result;
@@ -113,6 +118,7 @@ public:
     template<typename U>
     Matrix& operator*=(const U& scalar) {
         static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic.");
+        static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         for (size_t i = 0; i < Rows * Cols; i++) data[i] *= static_cast<T>(scalar);
         return *this;
     }
@@ -121,6 +127,7 @@ public:
     template<typename U>
     Matrix operator/(const U& scalar) const {
         static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic.");
+        static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         Matrix result;
         for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] / static_cast<T>(scalar);
         return result;
@@ -128,6 +135,7 @@ public:
     template<typename U>
     Matrix& operator/=(const U& scalar) {
         static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic.");
+        static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         for (size_t i = 0; i < Rows * Cols; i++) data[i] /= static_cast<T>(scalar);
         return *this;
     }
