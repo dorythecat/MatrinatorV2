@@ -44,11 +44,17 @@ public:
     }
 
     // Comparison
-    bool operator==(const Matrix& other) const {
+    template<unsigned int OtherRows, unsigned int OtherCols, typename U>
+    bool operator==(const Matrix<OtherRows, OtherCols, U>& other) const {
+        if (Rows != OtherRows || Cols != OtherCols) return false;
         if (this == &other) return true;
-        return memcmp(data, other.data, sizeof(T) * Rows * Cols) == 0;
+        // If types are the same,  compare directly
+        if constexpr (std::is_same_v<T, U>) return memcmp(data, other.data, sizeof(T) * Rows * Cols) == 0;
+        for (unsigned int i = 0; i < Rows * Cols; i++) if (data[i] != other.data[i]) return false;
+        return true;
     }
-    bool operator!=(const Matrix& other) const { return !(*this == other); }
+    template<unsigned int OtherRows, unsigned int OtherCols, typename U>
+    bool operator!=(const Matrix<OtherRows, OtherCols, U>& other) const { return !(*this == other); }
 
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
