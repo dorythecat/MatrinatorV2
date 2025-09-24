@@ -5,7 +5,7 @@ template<unsigned int Rows, unsigned int Cols, typename T>
 class Matrix {
 public:
     // Basic definitions
-    explicit Matrix(T value = T()) { for (unsigned int i = 0; i < Rows * Cols; ++i) data[i] = value; }
+    explicit Matrix(T value = T()) { for (unsigned int i = 0; i < Rows * Cols; i++) data[i] = value; }
     ~Matrix() { free(data); }
 
     Matrix(const Matrix& other) {
@@ -39,8 +39,8 @@ public:
 
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
-        for (unsigned int i = 0; i < Rows; ++i) {
-            for (unsigned int j = 0; j < Cols; ++j) {
+        for (unsigned int i = 0; i < Rows; i++) {
+            for (unsigned int j = 0; j < Cols; j++) {
                 os << m.data[i * Cols + j] << " ";
             } os << "\n";
         } return os;
