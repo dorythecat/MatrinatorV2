@@ -17,6 +17,12 @@ public:
         return data[row * Cols + col];
     }
 
+    // Set element
+    void set(const unsigned int row, const unsigned int col, const T& value) {
+        if (row >= Rows || col >= Cols) throw std::out_of_range("Matrix - Index out of range");
+        data[row * Cols + col] = value;
+    }
+
     // Size information
     [[nodiscard]] static unsigned int rows() { return Rows; }
     [[nodiscard]] static unsigned int cols() { return Cols; }
