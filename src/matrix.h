@@ -17,10 +17,20 @@ public:
 
     // Basic definitions
     explicit Matrix(T value = T()) { for (size_t i = 0; i < Rows * Cols; i++) data[i] = value; }
-    explicit Matrix(std::function<T()> func) { for (size_t i = 0; i < Rows * Cols; i++) data[i] = func(); }
-    explicit Matrix(std::function<T(size_t)> func) { for (size_t i = 0; i < Rows * Cols; i++) data[i] = func(i); }
-    explicit Matrix(std::function<T(size_t, size_t)> func) {
-        for (size_t i = 0; i < Rows; i++) for (size_t j = 0; j < Cols; j++) data[i * Cols + j] = func(i, j);
+    template<typename U>
+    explicit Matrix(std::function<U()> func) {
+        static_assert(std::is_arithmetic_v<U>, "Function return type must be arithmetic.");
+        for (size_t i = 0; i < Rows * Cols; i++) data[i] = static_cast<T>(func());
+    }
+    template<typename U>
+    explicit Matrix(std::function<U(size_t)> func) {
+        static_assert(std::is_arithmetic_v<U>, "Function return type must be arithmetic.");
+        for (size_t i = 0; i < Rows * Cols; i++) data[i] = static_cast<T>(func(i));
+    }
+    template<typename U>
+    explicit Matrix(std::function<U(size_t, size_t)> func) {
+        static_assert(std::is_arithmetic_v<U>, "Function return type must be arithmetic.");
+        for (size_t i = 0; i < Rows * Cols; i++) data[i] = static_cast<T>(func(i, static_cast<size_t>(i / Cols)));
     }
 
     // Size information
