@@ -7,7 +7,7 @@
 #include <limits>
 #include <functional>
 
-template<size_t Rows, size_t Cols, typename T>
+template<typename T, size_t Rows, size_t Cols = Rows>
 class Matrix {
     static_assert(Rows > 0 && Cols > 0, "Matrix dimensions must be greater than zero.");
     static_assert(std::is_arithmetic_v<T>, "Matrix type must be arithmetic.");
@@ -73,16 +73,16 @@ public:
     }
 
     // Comparison
-    template<size_t OtherRows, size_t OtherCols, typename U>
-    bool operator==(const Matrix<OtherRows, OtherCols, U>& other) const {
+    template<typename U, size_t OtherRows, size_t OtherCols = OtherRows>
+    bool operator==(const Matrix<U, OtherRows, OtherCols>& other) const {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for comparison.");
         if (Rows != OtherRows || Cols != OtherCols) return false;
         if (this == reinterpret_cast<const void*>(&other)) return true;
         for (size_t i = 0; i < Rows * Cols; i++) if (data[i] != static_cast<T>(other.data[i])) return false;
         return true;
     }
-    template<size_t OtherRows, size_t OtherCols, typename U>
-    bool operator!=(const Matrix<OtherRows, OtherCols, U>& other) const { return !(*this == other); }
+    template<typename U, size_t OtherRows, size_t OtherCols = OtherRows>
+    bool operator!=(const Matrix<U, OtherRows, OtherCols>& other) const { return !(*this == other); }
 
     // Addition
     Matrix operator+(const Matrix& other) const {

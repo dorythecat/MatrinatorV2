@@ -3,7 +3,7 @@
 #include "matrix.h"
 
 int main() {
-    Matrix<2, 3, int> mat1(5);
+    Matrix<int, 2, 3> mat1(5);
 
     std::cout << "Matrix 1:\n" << mat1 << std::endl;
 
