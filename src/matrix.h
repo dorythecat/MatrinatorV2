@@ -62,6 +62,28 @@ public:
     template<unsigned int OtherRows, unsigned int OtherCols, typename U>
     bool operator!=(const Matrix<OtherRows, OtherCols, U>& other) const { return !(*this == other); }
 
+    // Addition
+    Matrix operator+(const Matrix& other) const {
+        Matrix result;
+        for (unsigned int i = 0; i < Rows * Cols; i++) result.data[i] = data[i] + other.data[i];
+        return result;
+    }
+    Matrix& operator+=(const Matrix& other) {
+        for (unsigned int i = 0; i < Rows * Cols; i++) data[i] += other.data[i];
+        return *this;
+    }
+
+    // Subtraction
+    Matrix operator-(const Matrix& other) const {
+        Matrix result;
+        for (unsigned int i = 0; i < Rows * Cols; i++) result.data[i] = data[i] - other.data[i];
+        return result;
+    }
+    Matrix& operator-=(const Matrix& other) {
+        for (unsigned int i = 0; i < Rows * Cols; i++) data[i] -= other.data[i];
+        return *this;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (unsigned int i = 0; i < Rows; i++) {
