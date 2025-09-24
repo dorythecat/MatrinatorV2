@@ -87,24 +87,32 @@ public:
     }
 
     // Scalar multiplication
-    Matrix operator*(const T& scalar) const {
+    template<typename U>
+    Matrix operator*(const U& scalar) const {
+        static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic.");
         Matrix result;
-        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] * scalar;
+        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] * static_cast<T>(scalar);
         return result;
     }
-    Matrix& operator*=(const T& scalar) {
-        for (size_t i = 0; i < Rows * Cols; i++) data[i] *= scalar;
+    template<typename U>
+    Matrix& operator*=(const U& scalar) {
+        static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic.");
+        for (size_t i = 0; i < Rows * Cols; i++) data[i] *= static_cast<T>(scalar);
         return *this;
     }
 
     // Scalar division
-    Matrix operator/(const T& scalar) const {
+    template<typename U>
+    Matrix operator/(const U& scalar) const {
+        static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic.");
         Matrix result;
-        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] / scalar;
+        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] / static_cast<T>(scalar);
         return result;
     }
-    Matrix& operator/=(const T& scalar) {
-        for (size_t i = 0; i < Rows * Cols; i++) data[i] /= scalar;
+    template<typename U>
+    Matrix& operator/=(const U& scalar) {
+        static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic.");
+        for (size_t i = 0; i < Rows * Cols; i++) data[i] /= static_cast<T>(scalar);
         return *this;
     }
 
