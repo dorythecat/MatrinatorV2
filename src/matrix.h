@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <limits>
+#include <functional>
 
 template<size_t Rows, size_t Cols, typename T>
 class Matrix {
@@ -16,6 +17,11 @@ public:
 
     // Basic definitions
     explicit Matrix(T value = T()) { for (size_t i = 0; i < Rows * Cols; i++) data[i] = value; }
+    explicit Matrix(std::function<T()> func) { for (size_t i = 0; i < Rows * Cols; i++) data[i] = func(); }
+    explicit Matrix(std::function<T(size_t)> func) { for (size_t i = 0; i < Rows * Cols; i++) data[i] = func(i); }
+    explicit Matrix(std::function<T(size_t, size_t)> func) {
+        for (size_t i = 0; i < Rows; i++) for (size_t j = 0; j < Cols; j++) data[i * Cols + j] = func(i, j);
+    }
 
     // Size information
     [[nodiscard]] static size_t rows() { return Rows; }
@@ -119,9 +125,8 @@ public:
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
-            for (size_t j = 0; j < Cols; j++) {
-                os << m.data[i * Cols + j] << " ";
-            } os << "\n";
+            for (size_t j = 0; j < Cols; j++) os << m.data[i * Cols + j] << " ";
+            os << "\n";
         } return os;
     }
 
