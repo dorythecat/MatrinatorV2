@@ -7,25 +7,41 @@ public:
     // Basic definitions
     explicit Matrix(T value = T()) { for (unsigned int i = 0; i < Rows * Cols; i++) data[i] = value; }
 
+    // Size information
+    [[nodiscard]] static unsigned int rows() { return Rows; }
+    [[nodiscard]] static unsigned int cols() { return Cols; }
+
+    // Miscellaneous utils
+    [[nodiscard]] static bool isSquare() { return Rows == Cols; }
+    [[nodiscard]] bool zero() const {
+        for (unsigned int i = 0; i < Rows * Cols; i++) if (data[i] != T()) return false;
+        return true;
+    }
+    [[nodiscard]] bool identity() const {
+        if (!isSquare()) return false;
+        for (unsigned int i = 0; i < Rows; i++) {
+            for (unsigned int j = 0; j < Cols; j++) {
+                if (i == j && data[i * Cols + j] != T(1)) return false;
+                if (i != j && data[i * Cols + j] != T()) return false;
+            }
+        } return true;
+    }
+
     // Element access with bounds checking
     T& operator()(const unsigned int row, const unsigned int col) {
-        if (row >= Rows || col >= Cols) throw std::out_of_range("Matrix - Index out of range");
+        assertRange(row, col);
         return data[row * Cols + col];
     }
     const T& operator()(const unsigned int row, const unsigned int col) const {
-        if (row >= Rows || col >= Cols) throw std::out_of_range("Matrix - Index out of range");
+        assertRange(row, col);
         return data[row * Cols + col];
     }
 
     // Set element
     void set(const unsigned int row, const unsigned int col, const T& value) {
-        if (row >= Rows || col >= Cols) throw std::out_of_range("Matrix - Index out of range");
+        assertRange(row, col);
         data[row * Cols + col] = value;
     }
-
-    // Size information
-    [[nodiscard]] static unsigned int rows() { return Rows; }
-    [[nodiscard]] static unsigned int cols() { return Cols; }
 
     // Comparison
     bool operator==(const Matrix& other) const {
@@ -45,6 +61,11 @@ public:
 
 private:
     T data[Rows * Cols];
+
+    // Range assertion
+    static void assertRange(const unsigned int row, const unsigned int col) {
+        if (row >= Rows || col >= Cols) throw std::out_of_range("Matrix - Index out of range");
+    }
 };
 
 #endif // MATRIX_H
