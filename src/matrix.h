@@ -4,6 +4,8 @@
 template<unsigned int Rows, unsigned int Cols, typename T>
 class Matrix {
 public:
+    T data[Rows * Cols];
+
     // Basic definitions
     explicit Matrix(T value = T()) { for (unsigned int i = 0; i < Rows * Cols; i++) data[i] = value; }
 
@@ -47,7 +49,7 @@ public:
     template<unsigned int OtherRows, unsigned int OtherCols, typename U>
     bool operator==(const Matrix<OtherRows, OtherCols, U>& other) const {
         if (Rows != OtherRows || Cols != OtherCols) return false;
-        if (this == &other) return true;
+        if (this == reinterpret_cast<const void*>(&other)) return true;
         for (unsigned int i = 0; i < Rows * Cols; i++) if (data[i] != other.data[i]) return false;
         return true;
     }
@@ -64,8 +66,6 @@ public:
     }
 
 private:
-    T data[Rows * Cols];
-
     // Range assertion
     static void assertRange(const unsigned int row, const unsigned int col) {
         if (row >= Rows || col >= Cols) throw std::out_of_range("Matrix - Index out of range");
