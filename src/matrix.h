@@ -177,6 +177,36 @@ public:
         return *this;
     }
 
+    // Matrix multiplication
+    template<typename U, size_t OtherCols>
+    Matrix<T, Rows, OtherCols> operator*(const Matrix<U, Cols, OtherCols>& other) const {
+        static_assert(std::is_arithmetic_v<U>, "Matrix type must be arithmetic.");
+        static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for multiplication.");
+        Matrix<T, Rows, OtherCols> result;
+        for (size_t i = 0; i < Rows; i++) {
+            for (size_t j = 0; j < OtherCols; j++) {
+                for (size_t k = 0; k < Cols; k++) {
+                    result.data[i * OtherCols + j] += data[i * Cols + k] * static_cast<T>(other.data[k * OtherCols + j]);
+                }
+            }
+        } return result;
+    }
+    template<typename U, size_t OtherCols>
+    Matrix& operator*=(const Matrix<U, Cols, OtherCols>& other) {
+        static_assert(std::is_arithmetic_v<U>, "Matrix type must be arithmetic.");
+        static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for multiplication.");
+        static_assert(Rows == OtherCols, "In-place multiplication requires square matrices of the same size.");
+        Matrix<T, Rows, OtherCols> result;
+        for (size_t i = 0; i < Rows; i++) {
+            for (size_t j = 0; j < OtherCols; j++) {
+                for (size_t k = 0; k < Cols; k++) {
+                    result.data[i * OtherCols + j] += data[i * Cols + k] * static_cast<T>(other.data[k * OtherCols + j]);
+                }
+            }
+        } *this = result;
+        return *this;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
