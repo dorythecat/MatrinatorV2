@@ -72,16 +72,16 @@ public:
     }
 
     // Comparison
-    template<typename U, size_t OtherRows, size_t OtherCols = OtherRows>
-    bool operator==(const Matrix<U, OtherRows, OtherCols>& other) const {
+    template<typename U, size_t AltRows, size_t AltCols = AltRows>
+    bool operator==(const Matrix<U, AltRows, AltCols>& other) const {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for comparison.");
-        if (Rows != OtherRows || Cols != OtherCols) return false;
+        if (Rows != AltRows || Cols != AltCols) return false;
         if (this == reinterpret_cast<const void*>(&other)) return true;
         for (size_t i = 0; i < Rows * Cols; i++) if (data[i] != static_cast<T>(other.data[i])) return false;
         return true;
     }
-    template<typename U, size_t OtherRows, size_t OtherCols = OtherRows>
-    bool operator!=(const Matrix<U, OtherRows, OtherCols>& other) const { return !(*this == other); }
+    template<typename U, size_t AltRows, size_t AltCols = AltRows>
+    bool operator!=(const Matrix<U, AltRows, AltCols>& other) const { return !(*this == other); }
 
     // Addition
     Matrix operator+(const Matrix& other) const {
@@ -166,26 +166,26 @@ public:
     }
 
     // Matrix multiplication
-    template<typename U, size_t OtherCols>
-    Matrix<T, Rows, OtherCols> operator*(const Matrix<U, Cols, OtherCols>& other) const {
+    template<typename U, size_t AltCols>
+    Matrix<T, Rows, AltCols> operator*(const Matrix<U, Cols, AltCols>& other) const {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for multiplication.");
-        Matrix<T, Rows, OtherCols> result;
+        Matrix<T, Rows, AltCols> result;
         for (size_t i = 0; i < Rows; i++) {
-            for (size_t j = 0; j < OtherCols; j++) {
+            for (size_t j = 0; j < AltCols; j++) {
                 for (size_t k = 0; k < Cols; k++) {
-                    result.data[i * OtherCols + j] += data[i * Cols + k] * static_cast<T>(other.data[k * OtherCols + j]);
+                    result.data[i * AltCols + j] += data[i * Cols + k] * static_cast<T>(other.data[k * AltCols + j]);
                 }
             }
         } return result;
     }
-    template<typename U, size_t OtherCols>
-    Matrix<T, Rows, OtherCols>& operator*=(const Matrix<U, Cols, OtherCols>& other) {
+    template<typename U, size_t AltCols>
+    Matrix<T, Rows, AltCols>& operator*=(const Matrix<U, Cols, AltCols>& other) {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for multiplication.");
-        Matrix<T, Rows, OtherCols> result;
+        Matrix<T, Rows, AltCols> result;
         for (size_t i = 0; i < Rows; i++) {
-            for (size_t j = 0; j < OtherCols; j++) {
+            for (size_t j = 0; j < AltCols; j++) {
                 for (size_t k = 0; k < Cols; k++) {
-                    result.data[i * OtherCols + j] += data[i * Cols + k] * static_cast<T>(other.data[k * OtherCols + j]);
+                    result.data[i * AltCols + j] += data[i * Cols + k] * static_cast<T>(other.data[k * AltCols + j]);
                 }
             }
         } *this = result;
@@ -193,28 +193,30 @@ public:
     }
 
     // Matrix division
-    template<typename U, size_t OtherCols>
-    Matrix<T, Rows, OtherCols> operator/(const Matrix<U, Cols, OtherCols>& other) const {
+    template<typename U, size_t AltCols>
+    Matrix<T, Rows, AltCols> operator/(const Matrix<U, Cols, AltCols>& other) const {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for division.");
-        Matrix<T, Rows, OtherCols> result;
+        Matrix<T, Rows, AltCols> result;
         for (size_t i = 0; i < Rows; i++) {
-            for (size_t j = 0; j < OtherCols; j++) {
+            for (size_t j = 0; j < AltCols; j++) {
                 for (size_t k = 0; k < Cols; k++) {
-                    if (other.data[k * OtherCols + j] == U()) throw std::domain_error("Matrix - Division by zero in matrix division.");
-                    result.data[i * OtherCols + j] += data[i * Cols + k] / static_cast<T>(other.data[k * OtherCols + j]);
+                    if (other.data[k * AltCols + j] == U())
+                        throw std::domain_error("Matrix - Division by zero in matrix division.");
+                    result.data[i * AltCols + j] += data[i * Cols + k] / static_cast<T>(other.data[k * AltCols + j]);
                 }
             }
         } return result;
     }
-    template<typename U, size_t OtherCols>
-    Matrix<T, Rows, OtherCols>& operator/=(const Matrix<U, Cols, OtherCols>& other) {
+    template<typename U, size_t AltCols>
+    Matrix<T, Rows, AltCols>& operator/=(const Matrix<U, Cols, AltCols>& other) {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for division.");
-        Matrix<T, Rows, OtherCols> result;
+        Matrix<T, Rows, AltCols> result;
         for (size_t i = 0; i < Rows; i++) {
-            for (size_t j = 0; j < OtherCols; j++) {
+            for (size_t j = 0; j < AltCols; j++) {
                 for (size_t k = 0; k < Cols; k++) {
-                    if (other.data[k * OtherCols + j] == U()) throw std::domain_error("Matrix - Division by zero in matrix division.");
-                    result.data[i * OtherCols + j] += data[i * Cols + k] / static_cast<T>(other.data[k * OtherCols + j]);
+                    if (other.data[k * AltCols + j] == U())
+                        throw std::domain_error("Matrix - Division by zero in matrix division.");
+                    result.data[i * AltCols + j] += data[i * Cols + k] / static_cast<T>(other.data[k * AltCols + j]);
                 }
             }
         } *this = result;
