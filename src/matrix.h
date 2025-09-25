@@ -224,6 +224,16 @@ public:
         } return result;
     }
 
+    // Multiplication of row by scalar
+    template<typename U>
+    Matrix rowMul(const size_t row, U mul) {
+        static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
+        assertRange(row, 0);
+        Matrix result;
+        for (size_t i = row * Cols; i < (row + 1) * Cols; i++) result.data[i] = data[i] * static_cast<T>(mul);
+        return result;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
