@@ -90,7 +90,7 @@ public:
         return result;
     }
     Matrix& operator+=(const Matrix& other) {
-        for (size_t i = 0; i < Rows * Cols; i++) data[i] += other.data[i];
+        *this = *this + other;
         return *this;
     }
 
@@ -101,7 +101,7 @@ public:
         return result;
     }
     Matrix& operator-=(const Matrix& other) {
-        for (size_t i = 0; i < Rows * Cols; i++) data[i] -= other.data[i];
+        *this = *this - other;
         return *this;
     }
 
@@ -116,7 +116,7 @@ public:
     template<typename U>
     Matrix& operator+=(const U& scalar) {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
-        for (size_t i = 0; i < Rows * Cols; i++) data[i] += static_cast<T>(scalar);
+        *this = *this + scalar;
         return *this;
     }
 
@@ -131,7 +131,7 @@ public:
     template<typename U>
     Matrix& operator-=(const U& scalar) {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
-        for (size_t i = 0; i < Rows * Cols; i++) data[i] -= static_cast<T>(scalar);
+        *this = *this - scalar;
         return *this;
     }
 
@@ -146,7 +146,7 @@ public:
     template<typename U>
     Matrix& operator*=(const U& scalar) {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
-        for (size_t i = 0; i < Rows * Cols; i++) data[i] *= static_cast<T>(scalar);
+        *this = *this * scalar;
         return *this;
     }
 
@@ -161,7 +161,7 @@ public:
     template<typename U>
     Matrix& operator/=(const U& scalar) {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
-        for (size_t i = 0; i < Rows * Cols; i++) data[i] /= static_cast<T>(scalar);
+        *this = *this / scalar;
         return *this;
     }
 
@@ -181,14 +181,7 @@ public:
     template<typename U, size_t AltCols>
     Matrix<T, Rows, AltCols>& operator*=(const Matrix<U, Cols, AltCols>& other) {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for multiplication.");
-        Matrix<T, Rows, AltCols> result;
-        for (size_t i = 0; i < Rows; i++) {
-            for (size_t j = 0; j < AltCols; j++) {
-                for (size_t k = 0; k < Cols; k++) {
-                    result.data[i * AltCols + j] += data[i * Cols + k] * static_cast<T>(other.data[k * AltCols + j]);
-                }
-            }
-        } *this = result;
+        *this = *this * other;
         return *this;
     }
 
@@ -210,16 +203,7 @@ public:
     template<typename U, size_t AltCols>
     Matrix<T, Rows, AltCols>& operator/=(const Matrix<U, Cols, AltCols>& other) {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for division.");
-        Matrix<T, Rows, AltCols> result;
-        for (size_t i = 0; i < Rows; i++) {
-            for (size_t j = 0; j < AltCols; j++) {
-                for (size_t k = 0; k < Cols; k++) {
-                    if (other.data[k * AltCols + j] == U())
-                        throw std::domain_error("Matrix - Division by zero in matrix division.");
-                    result.data[i * AltCols + j] += data[i * Cols + k] / static_cast<T>(other.data[k * AltCols + j]);
-                }
-            }
-        } *this = result;
+        *this = *this / other;
         return *this;
     }
 
