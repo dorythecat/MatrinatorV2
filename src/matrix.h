@@ -179,9 +179,8 @@ public:
         } return result;
     }
     template<typename U, size_t OtherCols>
-    Matrix& operator*=(const Matrix<U, Cols, OtherCols>& other) {
+    Matrix<T, Rows, OtherCols>& operator*=(const Matrix<U, Cols, OtherCols>& other) {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for multiplication.");
-        static_assert(Rows == OtherCols, "In-place multiplication requires square matrices of the same size.");
         Matrix<T, Rows, OtherCols> result;
         for (size_t i = 0; i < Rows; i++) {
             for (size_t j = 0; j < OtherCols; j++) {
