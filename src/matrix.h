@@ -221,6 +221,15 @@ public:
         return *this;
     }
 
+    // Matrix per-element inversion (1/M)
+    Matrix operator!() const {
+        Matrix result;
+        for (size_t i = 0; i < Rows * Cols; i++) {
+            if (data[i] == T()) throw std::domain_error("Matrix - Division by zero in matrix inversion.");
+            result.data[i] = T(1) / data[i];
+        } return result;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
