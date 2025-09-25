@@ -230,6 +230,14 @@ public:
         } return result;
     }
 
+    // Matrix transposition
+    Matrix<T, Cols, Rows> transpose() const {
+        Matrix<T, Cols, Rows> result;
+        for (size_t i = 0; i < Rows; i++) {
+            for (size_t j = 0; j < Cols; j++) result.data[j * Rows + i] = data[i * Cols + j];
+        } return result;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
