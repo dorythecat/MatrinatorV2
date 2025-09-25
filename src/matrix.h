@@ -192,6 +192,35 @@ public:
         return *this;
     }
 
+    // Matrix division
+    template<typename U, size_t OtherCols>
+    Matrix<T, Rows, OtherCols> operator/(const Matrix<U, Cols, OtherCols>& other) const {
+        static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for division.");
+        Matrix<T, Rows, OtherCols> result;
+        for (size_t i = 0; i < Rows; i++) {
+            for (size_t j = 0; j < OtherCols; j++) {
+                for (size_t k = 0; k < Cols; k++) {
+                    if (other.data[k * OtherCols + j] == U()) throw std::domain_error("Matrix - Division by zero in matrix division.");
+                    result.data[i * OtherCols + j] += data[i * Cols + k] / static_cast<T>(other.data[k * OtherCols + j]);
+                }
+            }
+        } return result;
+    }
+    template<typename U, size_t OtherCols>
+    Matrix<T, Rows, OtherCols>& operator/=(const Matrix<U, Cols, OtherCols>& other) {
+        static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for division.");
+        Matrix<T, Rows, OtherCols> result;
+        for (size_t i = 0; i < Rows; i++) {
+            for (size_t j = 0; j < OtherCols; j++) {
+                for (size_t k = 0; k < Cols; k++) {
+                    if (other.data[k * OtherCols + j] == U()) throw std::domain_error("Matrix - Division by zero in matrix division.");
+                    result.data[i * OtherCols + j] += data[i * Cols + k] / static_cast<T>(other.data[k * OtherCols + j]);
+                }
+            }
+        } *this = result;
+        return *this;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
