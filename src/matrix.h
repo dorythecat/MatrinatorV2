@@ -277,6 +277,26 @@ public:
         return *this;
     }
 
+    // Reduced Row Echelon Form
+    static Matrix RREF(const Matrix mat) {
+        Matrix result = REF(mat);
+        for (int r = static_cast<int>(Rows) - 1; r >= 0; r--) {
+            size_t lead = 0;
+            while (lead < Cols && result.data[r * Cols + lead] == T()) lead++;
+            if (lead == Cols) continue;
+            for (int i = r - 1; i >= 0; i--) {
+                T sub = result.data[i * Cols + lead];
+                for (size_t j = 0; j < Cols; j++) result.data[i * Cols + j] -= sub * result.data[r * Cols + j];
+            }
+        } return result;
+    }
+
+    // Like the above, but without the need to reassign
+    Matrix toRREF() {
+        *this = RREF(*this);
+        return *this;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
