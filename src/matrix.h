@@ -16,6 +16,10 @@ public:
     T data[Rows * Cols];
 
     // Basic definitions
+    Matrix() { // Identity if square, zero otherwise
+        if (Rows == Cols) for (size_t i = 0; i < Rows; i++) data[i * Cols + i] = T(1);
+        else for (size_t i = 0; i < Rows * Cols; i++) data[i] = T();
+    }
     explicit Matrix(T value = T()) { for (size_t i = 0; i < Rows * Cols; i++) data[i] = value; }
     template<typename U>
     explicit Matrix(std::function<U()> func) {
