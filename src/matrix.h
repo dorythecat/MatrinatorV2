@@ -16,9 +16,9 @@ public:
     T data[Rows * Cols];
 
     // Basic definitions
-    Matrix() { // Identity if square, zero otherwise
-        if (Rows == Cols) for (size_t i = 0; i < Rows; i++) data[i * Cols + i] = T(1);
-        else for (size_t i = 0; i < Rows * Cols; i++) data[i] = T();
+    explicit Matrix(bool zero = false) { // Identity if square, zero otherwise
+        if (zero || Rows != Cols) for (size_t i = 0; i < Rows * Cols; i++) data[i] = T();
+        else for (size_t i = 0; i < Rows; i++) data[i * Cols + i] = T(1);
     }
     explicit Matrix(T value = T()) { for (size_t i = 0; i < Rows * Cols; i++) data[i] = value; }
     template<typename U>
@@ -262,6 +262,24 @@ public:
         r2 *= Cols;
         for (size_t i = 0; i < Cols; i++, r1++, r2++) data[r2] = data[r2] + data[r1] * static_cast<T>(mul);
         return *this;
+    }
+
+    // Row Echelon form
+    Matrix rowEchelon() {
+        for (size_t j = 0; j < Cols - 1; j++) {
+            T jj = data[j * Cols + j];
+            while (jj == 0) { // Find a non-zero pivot
+                for (size_t i = j + 1; i < Rows; i++) {
+                    if (data[i * Cols + j] != 0) {
+                        switchRows(i, j);
+                        jj = data[j * Cols + j];
+                        break;
+                    }
+                } break; // No non-zero pivot found, move to next column
+            } if (jj == 0) continue; // All elements in this column are zero, move to next column
+            jj = T(1) / jj; // Inverse of pivot
+            for (size_t i = j + 1; i < Rows; i++) linearAddRows(j, i, -data[i * Cols + j] * jj);
+        } return *this;
     }
 
     // Output
