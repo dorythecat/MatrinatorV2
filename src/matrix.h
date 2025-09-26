@@ -244,24 +244,24 @@ public:
 
     // Multiplication of row by scalar
     template<typename U>
-    Matrix rowMul(const size_t row, U mul) {
+    Matrix multiplyRow(size_t row, U mul) {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         assertRange(row, 0);
-        Matrix result;
-        for (size_t i = row * Cols; i < (row + 1) * Cols; i++) result.data[i] = data[i] * static_cast<T>(mul);
-        return result;
+        row *= Cols;
+        for (size_t i = row; i < row + Cols; i++) data[i] = data[i] * static_cast<T>(mul);
+        return *this;
     }
 
     // Multiplication of row by scalar and addition to another row
     template<typename U>
-    Matrix rowMulAdd(const size_t srcRow, const size_t destRow, U mul) {
+    Matrix linearAddRows(size_t r1, size_t r2, U mul) {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
-        assertRange(srcRow, 0);
-        assertRange(destRow, 0);
-        Matrix result = *this;
-        for (size_t i = 0; i < Cols; i++)
-            result.data[destRow * Cols + i] += data[srcRow * Cols + i] * static_cast<T>(mul);
-        return result;
+        assertRange(r1, 0);
+        assertRange(r2, 0);
+        r1 *= Cols;
+        r2 *= Cols;
+        for (size_t i = 0; i < Cols; i++, r1++, r2++) data[r2] = data[r2] + data[r1] * static_cast<T>(mul);
+        return *this;
     }
 
     // Output
