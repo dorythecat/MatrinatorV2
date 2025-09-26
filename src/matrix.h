@@ -65,10 +65,11 @@ public:
 
     // Set element
     template<typename U>
-    void set(const size_t row, const size_t col, const U& value) {
+    Matrix set(const size_t row, const size_t col, const U& value) {
         static_assert(std::is_convertible_v<U, T>, "Value type must be convertible to matrix type.");
         assertRange(row, col);
         data[row * Cols + col] = static_cast<T>(value);
+        return *this;
     }
 
     // Comparison
