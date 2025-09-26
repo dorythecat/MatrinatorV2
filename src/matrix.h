@@ -234,6 +234,18 @@ public:
         return result;
     }
 
+    // Multiplication of row by scalar and addition to another row
+    template<typename U>
+    Matrix rowMulAdd(const size_t srcRow, const size_t destRow, U mul) {
+        static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
+        assertRange(srcRow, 0);
+        assertRange(destRow, 0);
+        Matrix result = *this;
+        for (size_t i = 0; i < Cols; i++)
+            result.data[destRow * Cols + i] += data[srcRow * Cols + i] * static_cast<T>(mul);
+        return result;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
