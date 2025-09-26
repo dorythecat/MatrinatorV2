@@ -229,6 +229,19 @@ public:
         } return result;
     }
 
+    // Switch two rows
+    Matrix switchRows(size_t r1, size_t r2) {
+        assertRange(r1, 0);
+        assertRange(r2, 0);
+        r1 *= Cols;
+        r2 *= Cols;
+        for (size_t i = 0; i < Cols; i++, r1++, r2++) {
+            T temp = data[r1];
+            data[r1] = data[r2];
+            data[r2] = temp;
+        } return *this;
+    }
+
     // Multiplication of row by scalar
     template<typename U>
     Matrix rowMul(const size_t row, U mul) {
