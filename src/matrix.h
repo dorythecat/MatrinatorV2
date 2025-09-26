@@ -246,6 +246,37 @@ public:
         return result;
     }
 
+    // Gauss-Jordan elimination to Row Echelon Formç
+    static Matrix REF(const Matrix mat) {
+        Matrix result = mat;
+        size_t lead = 0;
+        for (size_t r = 0; r < Rows; r++) {
+            if (lead >= Cols) return result;
+            size_t i = r;
+            while (result.data[i * Cols + lead] == T()) {
+                i++;
+                if (i == Rows) {
+                    i = r;
+                    lead++;
+                    if (lead == Cols) return result;
+                }
+            }
+            for (size_t j = 0; j < Cols; j++) std::swap(result.data[i * Cols + j], result.data[r * Cols + j]);
+            T div = result.data[r * Cols + lead];
+            if (div != T()) for (size_t j = 0; j < Cols; j++) result.data[r * Cols + j] /= div;
+            for (size_t i = r + 1; i < Rows; i++) {
+                T sub = result.data[i * Cols + lead];
+                for (size_t j = 0; j < Cols; j++) result.data[i * Cols + j] -= sub * result.data[r * Cols + j];
+            } lead++;
+        } return result;
+    }
+
+    // Like the above, but without the need to reassign
+    Matrix toREF() {
+        *this = REF(*this);
+        return *this;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
