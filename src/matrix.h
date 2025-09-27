@@ -252,7 +252,7 @@ public:
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         assertRange(r1, 0);
         assertRange(r2, 0);
-        for (size_t i = r1 * Cols; i < Cols; i++) data[r2 * Cols + i] += data[r1 * Cols  + i] * static_cast<T>(mul);
+        for (size_t i = 0; i < Cols; i++) data[r2 * Cols + i] += data[r1 * Cols + i] * static_cast<T>(mul);
         return *this;
     }
 
