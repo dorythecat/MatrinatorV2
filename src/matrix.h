@@ -224,43 +224,35 @@ public:
     // Matrix transposition
     Matrix<T, Cols, Rows> transpose() const {
         Matrix<T, Cols, Rows> result;
-        for (size_t i = 0; i < Rows; i++) {
+        for (size_t i = 0; i < Rows; i++)
             for (size_t j = 0; j < Cols; j++) result.data[j * Rows + i] = data[i * Cols + j];
-        } return result;
+        return result;
     }
 
     // Switch two rows
-    Matrix switchRows(size_t r1, size_t r2) {
+    Matrix switchRows(const size_t r1, const size_t r2) {
         assertRange(r1, 0);
         assertRange(r2, 0);
-        r1 *= Cols;
-        r2 *= Cols;
-        for (size_t i = 0; i < Cols; i++, r1++, r2++) {
-            T temp = data[r1];
-            data[r1] = data[r2];
-            data[r2] = temp;
-        } return *this;
+        for (size_t i = 0; i < Cols; i++) std::swap(data[r1 * Cols + i], data[r2 * Cols + i]);
+        return *this;
     }
 
     // Multiplication of row by scalar
     template<typename U>
-    Matrix multiplyRow(size_t row, U mul) {
+    Matrix multiplyRow(const size_t row, const U mul) {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         assertRange(row, 0);
-        row *= Cols;
-        for (size_t i = row; i < row + Cols; i++) data[i] = data[i] * static_cast<T>(mul);
+        for (size_t i = row * Cols; i < row * Cols + Cols; i++) data[i] = data[i] * static_cast<T>(mul);
         return *this;
     }
 
     // Multiplication of row by scalar and addition to another row
     template<typename U>
-    Matrix linearAddRows(size_t r1, size_t r2, U mul) {
+    Matrix linearAddRows(const size_t r1, const size_t r2, const U mul) {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         assertRange(r1, 0);
         assertRange(r2, 0);
-        r1 *= Cols;
-        r2 *= Cols;
-        for (size_t i = 0; i < Cols; i++, r1++, r2++) data[r2] = data[r2] + data[r1] * static_cast<T>(mul);
+        for (size_t i = r1 * Cols; i < Cols; i++) data[r2 * Cols + i] += data[r1 * Cols  + i] * static_cast<T>(mul);
         return *this;
     }
 
