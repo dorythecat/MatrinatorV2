@@ -8,5 +8,5 @@ The idea is to have a program that can:
 - [x] Be able to multiply by scalars and other matrices.
 - [x] Be able to take the determinant of square matrices.
 - [x] Be able to calculate the rank of a matrix.
-- [ ] Be able to take the inverse of square matrices.
+- [x] Be able to take the inverse of square matrices.
 - [ ] Do all these things efficiently enough.

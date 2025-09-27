@@ -292,6 +292,21 @@ public:
         } return *this;
     }
 
+    // Inverse
+    Matrix inverse() const {
+        static_assert(Rows == Cols, "Inverse is only defined for square matrices.");
+        Matrix<T, Rows, 2 * Cols> augmented(true);
+        for (size_t i = 0; i < Rows; i++) {
+            for (size_t j = 0; j < Cols; j++) augmented.data[i * (2 * Cols) + j] = data[i * Cols + j];
+            augmented.data[i * (2 * Cols) + (Cols + i)] = T(1);
+        }
+        augmented.reducedRowEchelon();
+        Matrix result(true);
+        for (size_t i = 0; i < Rows; i++)
+            for (size_t j = 0; j < Cols; j++) result.data[i * Cols + j] = augmented.data[i * (2 * Cols) + (Cols + j)];
+        return result;
+    }
+
     // Determinant
     T determinant() const {
         static_assert(Rows == Cols, "Determinant is only defined for square matrices.");
