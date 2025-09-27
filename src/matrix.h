@@ -261,19 +261,21 @@ public:
 
     // Row Echelon form
     Matrix rowEchelon() {
-        for (size_t j = 0; j < Cols - 1; j++) {
-            T jj = data[j * Cols + j];
-            while (jj == 0) { // Find a non-zero pivot
-                for (size_t i = j + 1; i < Rows; i++) {
-                    if (data[i * Cols + j] != 0) {
-                        switchRows(i, j);
-                        jj = data[j * Cols + j];
-                        break;
-                    }
-                } break; // No non-zero pivot found, move to next column
-            } if (jj == 0) continue; // All elements in this column are zero, move to next column
-            jj = T(1) / jj; // Inverse of pivot
-            for (size_t i = j + 1; i < Rows; i++) linearAddRows(j, i, -data[i * Cols + j] * jj);
+        for (size_t i = 0; i < Rows; i++) {
+            // Find pivot
+            size_t pivotRow = i;
+            while (pivotRow < Rows && data[pivotRow * Cols + i] == T()) pivotRow++;
+            if (pivotRow == Rows) continue; // No pivot in this column
+
+            // Swap to current row
+            if (pivotRow != i) switchRows(i, pivotRow);
+
+            // Normalize pivot row
+            multiplyRow(i, T(1) / data[i * Cols + i]);
+
+            // Eliminate below
+            for (size_t j = i + 1; j < Rows; j++)
+                if (data[j * Cols + i] != T()) linearAddRows(i, j, -data[j * Cols + i]);
         } return *this;
     }
 
