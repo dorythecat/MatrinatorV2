@@ -276,6 +276,16 @@ public:
         } return *this;
     }
 
+    // Determinant
+    T determinant() const {
+        static_assert(Rows == Cols, "Determinant is only defined for square matrices.");
+        Matrix temp = *this;
+        temp.rowEchelon();
+        T det = T(1);
+        for (size_t i = 0; i < Rows; i++) det *= temp.data[i * Cols + i];
+        return det;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
