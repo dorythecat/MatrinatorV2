@@ -270,9 +270,6 @@ public:
             // Swap to current row
             if (pivotRow != i) switchRows(i, pivotRow);
 
-            // Normalize pivot row
-            multiplyRow(i, T(1) / data[i * Cols + i]);
-
             // Eliminate below
             for (size_t j = i + 1; j < Rows; j++)
                 if (data[j * Cols + i] != T()) linearAddRows(i, j, -data[j * Cols + i]);
