@@ -58,11 +58,11 @@ public:
     }
 
     // Element access with bounds checking
-    T& operator()(const size_t row, const size_t col) {
+    [[nodiscard]] T& operator()(const size_t row, const size_t col) {
         assertRange(row, col);
         return data[row * Cols + col];
     }
-    const T& operator()(const size_t row, const size_t col) const {
+    [[nodiscard]] const T& operator()(const size_t row, const size_t col) const {
         assertRange(row, col);
         return data[row * Cols + col];
     }
@@ -78,7 +78,7 @@ public:
 
     // Comparison
     template<typename U, size_t AltRows, size_t AltCols = AltRows>
-    bool operator==(const Matrix<U, AltRows, AltCols>& other) const {
+    [[nodiscard]] bool operator==(const Matrix<U, AltRows, AltCols>& other) const {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for comparison.");
         if (Rows != AltRows || Cols != AltCols) return false;
         if (this == reinterpret_cast<const void*>(&other)) return true;
@@ -86,10 +86,10 @@ public:
         return true;
     }
     template<typename U, size_t AltRows, size_t AltCols = AltRows>
-    bool operator!=(const Matrix<U, AltRows, AltCols>& other) const { return !(*this == other); }
+    [[nodiscard]] bool operator!=(const Matrix<U, AltRows, AltCols>& other) const { return !(*this == other); }
 
     // Addition
-    Matrix operator+(const Matrix& other) const {
+    [[nodiscard]] Matrix operator+(const Matrix& other) const {
         Matrix result;
         for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] + other.data[i];
         return result;
@@ -100,7 +100,7 @@ public:
     }
 
     // Subtraction
-    Matrix operator-(const Matrix& other) const {
+    [[nodiscard]] Matrix operator-(const Matrix& other) const {
         Matrix result;
         for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] - other.data[i];
         return result;
@@ -112,7 +112,7 @@ public:
 
     // Scalar addition
     template<typename U>
-    Matrix operator+(const U& scalar) const {
+    [[nodiscard]] Matrix operator+(const U& scalar) const {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         Matrix result;
         for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] + static_cast<T>(scalar);
@@ -127,7 +127,7 @@ public:
 
     // Scalar subtraction
     template<typename U>
-    Matrix operator-(const U& scalar) const {
+    [[nodiscard]] Matrix operator-(const U& scalar) const {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         Matrix result;
         for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] - static_cast<T>(scalar);
@@ -142,7 +142,7 @@ public:
 
     // Scalar multiplication
     template<typename U>
-    Matrix operator*(const U& scalar) const {
+    [[nodiscard]] Matrix operator*(const U& scalar) const {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         Matrix result;
         for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] * static_cast<T>(scalar);
@@ -157,7 +157,7 @@ public:
 
     // Scalar division
     template<typename U>
-    Matrix operator/(const U& scalar) const {
+    [[nodiscard]] Matrix operator/(const U& scalar) const {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
         Matrix result;
         for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] / static_cast<T>(scalar);
@@ -172,7 +172,7 @@ public:
 
     // Matrix multiplication
     template<typename U, size_t AltCols>
-    Matrix<T, Rows, AltCols> operator*(const Matrix<U, Cols, AltCols>& other) const {
+    [[nodiscard]] Matrix<T, Rows, AltCols> operator*(const Matrix<U, Cols, AltCols>& other) const {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for multiplication.");
         Matrix<T, Rows, AltCols> result;
         for (size_t i = 0; i < Rows; i++) {
@@ -192,7 +192,7 @@ public:
 
     // Matrix division
     template<typename U, size_t AltCols>
-    Matrix<T, Rows, AltCols> operator/(const Matrix<U, Cols, AltCols>& other) const {
+    [[nodiscard]] Matrix<T, Rows, AltCols> operator/(const Matrix<U, Cols, AltCols>& other) const {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for division.");
         Matrix<T, Rows, AltCols> result;
         for (size_t i = 0; i < Rows; i++) {
@@ -213,7 +213,7 @@ public:
     }
 
     // Matrix per-element inversion (1/M)
-    Matrix operator!() const {
+    [[nodiscard]] Matrix operator!() const {
         Matrix result;
         for (size_t i = 0; i < Rows * Cols; i++) {
             if (data[i] == T()) throw std::domain_error("Matrix - Division by zero in matrix inversion.");
@@ -226,7 +226,8 @@ public:
         Matrix<T, Cols, Rows> result;
         for (size_t i = 0; i < Rows; i++)
             for (size_t j = 0; j < Cols; j++) result.data[j * Rows + i] = data[i * Cols + j];
-        return result;
+        *this = result;
+        return *this;
     }
 
     // Switch two rows
@@ -255,8 +256,7 @@ public:
         for (size_t i = 0; i < Cols; i++) {
             data[r2 * Cols + i] += data[r1 * Cols + i] * static_cast<T>(mul);
             if (data[r2 * Cols + i] == T()) data[r2 * Cols + i] = T(); // Avoid -0
-        }
-        return *this;
+        } return *this;
     }
 
     // Row Echelon form
@@ -308,7 +308,7 @@ public:
     }
 
     // Determinant
-    T determinant() const {
+    [[nodiscard]] T determinant() const {
         static_assert(Rows == Cols, "Determinant is only defined for square matrices.");
         Matrix temp = *this;
         temp.rowEchelon();
@@ -318,7 +318,7 @@ public:
     }
 
     // Rank
-    T rank() const {
+    [[nodiscard]] T rank() const {
         Matrix temp = *this;
         temp.rowEchelon();
         size_t rank = 0;
