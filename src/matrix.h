@@ -276,6 +276,22 @@ public:
         } return *this;
     }
 
+    // Reduced Row Echelon form
+    Matrix reducedRowEchelon() {
+        rowEchelon();
+        for (int i = static_cast<int>(Rows) - 1; i >= 0; i--) {
+            // Find pivot
+            size_t pivotCol = 0;
+            while (pivotCol < Cols && data[i * Cols + pivotCol] == T()) pivotCol++;
+            if (pivotCol == Cols) continue; // No pivot in this row
+            // Normalize pivot
+            multiplyRow(i, T(1) / data[i * Cols + pivotCol]);
+            // Eliminate above
+            for (int j = i - 1; j >= 0; j--)
+                if (data[j * Cols + pivotCol] != T()) linearAddRows(i, j, -data[j * Cols + pivotCol]);
+        } return *this;
+    }
+
     // Determinant
     T determinant() const {
         static_assert(Rows == Cols, "Determinant is only defined for square matrices.");
