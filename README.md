@@ -7,6 +7,6 @@ The idea is to have a program that can:
 - [x] Be able to add and subtract matrices.
 - [x] Be able to multiply by scalars and other matrices.
 - [x] Be able to take the determinant of square matrices.
-- [ ] Be able to calculate the range of a matrix.
+- [x] Be able to calculate the rank of a matrix.
 - [ ] Be able to take the inverse of square matrices.
 - [ ] Do all these things efficiently enough.

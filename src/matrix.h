@@ -286,6 +286,22 @@ public:
         return det;
     }
 
+    // Rank
+    T rank() const {
+        Matrix temp = *this;
+        temp.rowEchelon();
+        size_t rank = 0;
+        for (size_t i = 0; i < Rows; i++) {
+            bool nonZeroRow = false;
+            for (size_t j = 0; j < Cols; j++) {
+                if (temp.data[i * Cols + j] != T()) {
+                    nonZeroRow = true;
+                    break;
+                }
+            } if (nonZeroRow) rank++;
+        } return rank;
+    }
+
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
