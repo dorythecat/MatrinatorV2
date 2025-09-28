@@ -184,13 +184,11 @@ public:
     [[nodiscard]] Matrix<T, Rows, AltCols> operator*(const Matrix<U, Cols, AltCols>& other) const {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for multiplication.");
         Matrix<T, Rows, AltCols> result;
-        for (size_t i = 0; i < Rows; i++) {
-            for (size_t j = 0; j < AltCols; j++) {
-                for (size_t k = 0; k < Cols; k++) {
+        for (size_t i = 0; i < Rows; i++)
+            for (size_t j = 0; j < AltCols; j++)
+                for (size_t k = 0; k < Cols; k++)
                     result.data[i * AltCols + j] += data[i * Cols + k] * static_cast<T>(other.data[k * AltCols + j]);
-                }
-            }
-        } return result;
+        return result;
     }
     template<typename U, size_t AltCols>
     Matrix<T, Rows, AltCols>& operator*=(const Matrix<U, Cols, AltCols>& other) {
@@ -241,8 +239,7 @@ public:
 
     // Switch two rows
     Matrix switchRows(const size_t r1, const size_t r2) {
-        assertRange(r1, 0);
-        assertRange(r2, 0);
+        checkRows(r1, r2);
         for (size_t i = 0; i < Cols; i++) std::swap(data[r1 * Cols + i], data[r2 * Cols + i]);
         return *this;
     }
@@ -260,8 +257,7 @@ public:
     template<typename U>
     Matrix linearAddRows(const size_t r1, const size_t r2, const U mul) {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
-        assertRange(r1, 0);
-        assertRange(r2, 0);
+        checkRows(r1, r2);
         for (size_t i = 0; i < Cols; i++) {
             data[r2 * Cols + i] += data[r1 * Cols + i] * static_cast<T>(mul);
             if (data[r2 * Cols + i] == T()) data[r2 * Cols + i] = T(); // Avoid -0
@@ -355,6 +351,9 @@ private:
     // Range assertion
     static void assertRange(const size_t row, const size_t col) {
         if (row >= Rows || col >= Cols) throw std::out_of_range("Matrix - Index out of range");
+    }
+    static void checkRows(const size_t r1, const size_t r2) {
+        if (r1 >= Rows || r2 >= Rows) throw std::out_of_range("Matrix - Row index out of range");
     }
 };
 
