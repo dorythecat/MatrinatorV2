@@ -83,7 +83,6 @@ public:
     [[nodiscard]] bool operator==(const Matrix<U, AltRows, AltCols>& other) const {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for comparison.");
         if (Rows != AltRows || Cols != AltCols) return false;
-        if (this == reinterpret_cast<const void*>(&other)) return true;
         for (size_t i = 0; i < Rows * Cols; i++) if (data[i] != static_cast<T>(other.data[i])) return false;
         return true;
     }
