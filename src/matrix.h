@@ -100,7 +100,7 @@ public:
     template<typename U>
     Matrix& operator+=(const Matrix<U, Rows, Cols>& other) {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for addition.");
-        *this = *this + other;
+        for (size_t i = 0; i < Rows * Cols; i++) data[i] += static_cast<T>(other.data[i]);
         return *this;
     }
 
@@ -108,14 +108,14 @@ public:
     template<typename U>
     [[nodiscard]] Matrix operator-(const Matrix<U, Rows, Cols>& other) const {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for subtraction.");
-        Matrix result;
-        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] - static_cast<T>(other.data[i]);
+        Matrix result = *this;
+        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] -= static_cast<T>(other.data[i]);
         return result;
     }
     template<typename U>
     Matrix& operator-=(const Matrix<U, Rows, Cols>& other) {
         static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for subtraction.");
-        *this = *this - other;
+        for (size_t i = 0; i < Rows * Cols; i++) data[i] -= static_cast<T>(other.data[i]);
         return *this;
     }
 
@@ -123,8 +123,8 @@ public:
     template<typename U>
     [[nodiscard]] Matrix operator+(const U& scalar) const {
         static_assert(std::is_convertible_v<U, T>, "Scalar type must be convertible to matrix type.");
-        Matrix result;
-        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] + static_cast<T>(scalar);
+        Matrix result = *this;
+        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] += static_cast<T>(scalar);
         return result;
     }
     template<typename U>
