@@ -9,4 +9,4 @@ The idea is to have a program that can:
 - [x] Be able to take the determinant of square matrices.
 - [x] Be able to calculate the rank of a matrix.
 - [x] Be able to take the inverse of square matrices.
-- [ ] Do all these things efficiently enough.
+- [x] Do all these things efficiently enough.
