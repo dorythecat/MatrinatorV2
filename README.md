@@ -10,3 +10,9 @@ The idea is to have a program that can:
 - [x] Be able to calculate the rank of a matrix.
 - [x] Be able to take the inverse of square matrices.
 - [x] Do all these things efficiently enough.
+
+# How to use
+This program is mainly meant to be used as a library, so you can just include the `matrix.h` header file and go about
+your business. The program that's included both as a release in GitHub and in the main.cpp file, is mainly meant as a
+very, very reduced and basic demonstration of the capabilities of the library, and can be easily modified to test
+usages. Have fun! :D
