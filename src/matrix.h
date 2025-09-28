@@ -334,7 +334,11 @@ public:
     // Output
     friend std::ostream& operator<<(std::ostream& os, Matrix m) {
         for (size_t i = 0; i < Rows; i++) {
-            for (size_t j = 0; j < Cols; j++) os << m.data[i * Cols + j] << " ";
+            for (size_t j = 0; j < Cols; j++) {
+                T val = m.data[i * Cols + j];
+                if (val == T()) val = T(); // Avoid -0
+                os << val << (j == Cols - 1 ? "" : " ");
+            }
             os << "\n";
         } return os;
     }
