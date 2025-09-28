@@ -37,10 +37,6 @@ public:
         for (size_t i = 0; i < Rows * Cols; i++) data[i] = static_cast<T>(func(i, static_cast<size_t>(i / Cols)));
     }
 
-    // Size information
-    [[nodiscard]] static size_t rows() { return Rows; }
-    [[nodiscard]] static size_t cols() { return Cols; }
-
     // Miscellaneous utils
     [[nodiscard]] static bool isSquare() { return Rows == Cols; }
     [[nodiscard]] bool zero() const {
