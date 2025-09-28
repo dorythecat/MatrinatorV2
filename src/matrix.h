@@ -90,23 +90,31 @@ public:
     [[nodiscard]] bool operator!=(const Matrix<U, AltRows, AltCols>& other) const { return !(*this == other); }
 
     // Addition
-    [[nodiscard]] Matrix operator+(const Matrix& other) const {
+    template<typename U>
+    [[nodiscard]] Matrix operator+(const Matrix<U, Rows, Cols>& other) const {
+        static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for addition.");
         Matrix result;
-        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] + other.data[i];
+        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] + static_cast<T>(other.data[i]);
         return result;
     }
-    Matrix& operator+=(const Matrix& other) {
+    template<typename U>
+    Matrix& operator+=(const Matrix<U, Rows, Cols>& other) {
+        static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for addition.");
         *this = *this + other;
         return *this;
     }
 
     // Subtraction
-    [[nodiscard]] Matrix operator-(const Matrix& other) const {
+    template<typename U>
+    [[nodiscard]] Matrix operator-(const Matrix<U, Rows, Cols>& other) const {
+        static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for subtraction.");
         Matrix result;
-        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] - other.data[i];
+        for (size_t i = 0; i < Rows * Cols; i++) result.data[i] = data[i] - static_cast<T>(other.data[i]);
         return result;
     }
-    Matrix& operator-=(const Matrix& other) {
+    template<typename U>
+    Matrix& operator-=(const Matrix<U, Rows, Cols>& other) {
+        static_assert(std::is_convertible_v<U, T>, "Matrix types must be convertible for subtraction.");
         *this = *this - other;
         return *this;
     }
