@@ -49,12 +49,10 @@ public:
     }
     [[nodiscard]] bool identity() const {
         if (!isSquare()) return false;
-        for (size_t i = 0; i < Rows; i++) {
-            for (size_t j = 0; j < Cols; j++) {
-                if (i == j && data[i * Cols + j] != T(1)) return false;
-                if (i != j && data[i * Cols + j] != T()) return false;
-            }
-        } return true;
+        for (size_t i = 0; i < Rows; i++)
+            for (size_t j = 0; j < Cols; j++)
+                if ((i == j && data[i * Cols + j] != T(1)) || (i != j && data[i * Cols + j] != T())) return false;
+        return true;
     }
 
     // Element access with bounds checking
@@ -338,8 +336,7 @@ public:
                 T val = m.data[i * Cols + j];
                 if (val == T()) val = T(); // Avoid -0
                 os << val << (j == Cols - 1 ? "" : " ");
-            }
-            os << "\n";
+            } os << "\n";
         } return os;
     }
 
