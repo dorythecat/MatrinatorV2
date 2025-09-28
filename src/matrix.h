@@ -16,7 +16,7 @@ public:
     T data[Rows * Cols];
 
     // Basic definitions
-    explicit Matrix(bool zero = false) { // Identity if square, zero otherwise
+    explicit Matrix(bool zero) { // Identity if square, zero otherwise
         if (zero || Rows != Cols) for (size_t i = 0; i < Rows * Cols; i++) data[i] = T();
         else for (size_t i = 0; i < Rows; i++) data[i * Cols + i] = T(1);
     }
@@ -49,6 +49,14 @@ public:
             for (size_t j = 0; j < Cols; j++)
                 if ((i == j && data[i * Cols + j] != T(1)) || (i != j && data[i * Cols + j] != T())) return false;
         return true;
+    }
+
+    // Make matrix functions
+    void makeZero() const { for (size_t i = 0; i < Rows * Cols; i++) data[i] = T(); }
+    void makeIdentity(T diagonalValue = 1) const {
+        if (!isSquare()) throw std::logic_error("Matrix - Cannot make non-square matrix identity.");
+        for (size_t i = 0; i < Rows * Cols; i++) data[i] = T();
+        for (size_t i = 0; i < Rows; i++) data[i * Cols + i] = diagonalValue;
     }
 
     // Element access with bounds checking
