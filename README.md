@@ -16,3 +16,5 @@ This program is mainly meant to be used as a library, so you can just include th
 your business. The program that's included both as a release in GitHub and in the main.cpp file, is mainly meant as a
 very, very reduced and basic demonstration of the capabilities of the library, and can be easily modified to test
 usages. Have fun! :D
+
+# [Demo Video](https://github.com/dorythecat/MatrinatorV2/raw/refs/heads/main/demo.mp4)
